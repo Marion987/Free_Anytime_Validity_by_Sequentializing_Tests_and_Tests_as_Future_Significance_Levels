@@ -1,2 +1,2 @@
 # Bachelor-Thesis
-Anytime Validity
+Free anytime validity by sequentializing tests
