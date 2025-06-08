@@ -1,0 +1,117 @@
+#Simulation from Section 1.2 "Anytime valid sequential tests"
+#type I error plot for traditional z-test in sequence and sequential z-test for testing mu<=0 against mu>0
+
+ set.seed(9) #for reproducibility
+ 
+#load libraries
+ library(ggplot2)
+ 
+#define function to compute traditional z-test of level alpha
+ traditional_z_test <- function(samples, alpha){
+   #compute the quantile for the level alpha traditional z-test
+   quantile = qnorm(1 - alpha, mean = 0, sd = 1)
+   
+   N = length(samples)
+   
+   #compute the z-test statistic
+   z_statistic = (sum(samples)/ sqrt(N))
+   
+   if (z_statistic > quantile) {
+     return(1) #reject the null hypothesis
+   } else {
+     return(0) #do not reject the null hypothesis
+   }
+ }
+ 
+ #function for a sequence of traditional z-tests
+ sequential_traditional_z_test <- function(samples, alpha){
+   seq_tests = c(n = length(samples))
+   N = length(samples)
+   #compute the traditional z-test for each new data point
+   for (i in 1:N){
+     seq_tests[i] = traditional_z_test(samples[1:i], alpha)
+     if (seq_tests[i] == 1) {
+       return(1) #stop if we reject the null hypothesis
+     }
+   }
+   #if we never reject the null hypothesis, return 0
+   return(0)
+ }
+ 
+ 
+ ###compute the sequential test from the z-test (as in Chapter 3) and compute the time we stop
+ #sequential test defined from the z-tests for data points start:end
+ #N = number of data points for traditional z-test, alpha = level of the test
+ seq_test <- function(samples, start, end, N, alpha){
+   #compute the quantile for the level alpha sequential test
+   quantile = qnorm(1 - alpha, mean = 0, sd = 1)
+   
+   numerator = sum(samples[start:end]) - sqrt(N)*quantile
+   denominator = sqrt(N - (end-start + 1))
+   return(pnorm(numerator/denominator))
+ }
+ 
+ #define function that computes the normal seq. z-test and returns the first index where the seq. test is over the threshold
+ norm_seq_test <- function(samples, comp_size, alpha){
+   #define a vector to store the values of the seq.test and fill it with the sequential test values
+   seq_tests = c(n = comp_size)
+   for (i in 1:comp_size){
+     seq_tests[i] = seq_test(samples, 1, i, comp_size, alpha)
+   }
+   
+   #If there is no value in seq_tests that is >= threshold, return the comp_size + penalization to indicate a non-rejection
+   if (length(which(seq_tests >= threshold)) == 0){
+     return(0)
+   }
+   #else return the index of the first value in seq_tests that is >= threshold, so leads to a rejection
+   else{
+     return(1)
+   }
+ }
+ 
+ 
+ #set parameters
+ alphas = seq(0.01, 0.1, 0.005) #alpha values for the tests
+ rep = 1000 #number of repetitions for each alpha
+ sample_size = 1000 #size of each of the samples
+ threshold = 0.9999 #threshold for the sequential test
+ 
+ #Initialize matrices
+ rejections_normal <- matrix(0, nrow = length(alphas), ncol = rep)
+ rejections_glued <- matrix(0, nrow = length(alphas), ncol = rep)
+ 
+ #repeat for each alpha
+ for (j in seq_along(alphas)) {
+   alpha <- alphas[j]
+   #repeat rep times
+   for (i in 1:rep) {
+     #generate samples from standard normal distribution
+     samples <- rnorm(sample_size, mean = 0, sd = 1)
+     #compute stopping times for both tests
+     rejections_normal[j, i] <- sequential_traditional_z_test(samples, alpha)
+     rejections_glued[j, i] <- norm_seq_test(samples, sample_size, alpha)
+   }
+ }
+ 
+ #compute empirical Type I errors
+ rejection_rate_normal = rowSums(rejections_normal)/rep
+ rejection_rate_glued = rowSums(rejections_glued)/rep
+ 
+ #prepare data frame for ggplot
+ rejection_rate_data = data.frame(
+   alpha = rep(alphas, 2),
+   rejection_rate = c(rejection_rate_normal, rejection_rate_glued),
+   test_type = rep(c("Traditional z-Tests", "Sequential z-Test"), each = length(alphas))
+ )
+ #plot the rejection rates
+ ggplot(rejection_rate_data, aes(x = alpha, y = rejection_rate, color = test_type)) +
+   geom_line() +
+   geom_point() +
+   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black", size = 0.5) +
+   labs(title = "Type I error plot",
+        x = "Level",
+        y = "Rejection Rate") +
+   theme_minimal() +
+   scale_color_manual(values = c("green4", "violetred")) +
+   theme(legend.title = element_blank())
+ 
