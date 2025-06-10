@@ -13,7 +13,7 @@ set.seed(9) #for reproducibility
 ###set parameters
 boundary = 0.9 #If the seq. z-test reaches the boundary, we define a new test
 threshold = 0.9999 #If the seq. test is greater than this threshold, we reject the null hypothesis
-penalty = 10 #penalty for not rejecting the null hypothesis, usefull to plot the results
+penalty = 10 #penalty for not rejecting the null hypothesis, useful to plot the results
 alpha = 0.05 #starting alpha of z-test (and sequential test)
 sample_size = 500 #size of one sample
 rep = 2000 #number of repetitions for each value of mü
