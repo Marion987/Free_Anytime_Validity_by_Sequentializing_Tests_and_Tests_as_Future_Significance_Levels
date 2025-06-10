@@ -13,7 +13,7 @@ library(latex2exp)
 
 
 ###set parameters
-rep = 1000 #how often we take samples
+rep = 2000 #how often we take samples
 sample_size = 500 #size of one sample
 step_size = 50 #after every step_size data points, we define a new test (define s.t. sample_size = step_size * m for some m)
 alpha = 0.05 #starting level of z-test (and sequential test)
