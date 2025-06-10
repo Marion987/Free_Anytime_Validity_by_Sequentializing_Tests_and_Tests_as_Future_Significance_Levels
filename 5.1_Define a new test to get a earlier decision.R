@@ -16,7 +16,7 @@ threshold = 0.9999 #If the seq. test is greater than this threshold, we reject t
 penalty = 10 #penalty for not rejecting the null hypothesis, usefull to plot the results
 alpha = 0.05 #starting alpha of z-test (and sequential test)
 sample_size = 500 #size of one sample
-rep = 1000 #number of repetitions for each value of mü
+rep = 2000 #number of repetitions for each value of mü
 size_new = 15 #size of the new test,i.e. how many data points we consider to get a decision after we stoped
 x = c(0, 0.1, 0.2, 0.3, 0.4) #values of mü (min, max, frequency)
 
