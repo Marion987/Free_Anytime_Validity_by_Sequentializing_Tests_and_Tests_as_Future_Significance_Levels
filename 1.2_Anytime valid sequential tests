@@ -9,7 +9,7 @@ set.seed(9) #for reproducibility
  
 ###set parameters
  alphas = seq(0.01, 0.1, 0.005) #alpha values for the tests
- rep = 1000 #number of repetitions for each alpha
+ rep = 2000 #number of repetitions for each alpha
  sample_size = 500 #size of each of the samples
  threshold = 0.9999 #threshold for the sequential test
 
