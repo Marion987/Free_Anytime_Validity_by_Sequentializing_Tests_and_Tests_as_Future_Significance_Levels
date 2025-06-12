@@ -116,4 +116,5 @@ set.seed(9) #for reproducibility
         y = "Rejection Rate") +
    theme_minimal() +
    scale_color_manual(values = c("green4", "violetred")) +
-   theme(legend.title = element_blank())
+   theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5))
+
