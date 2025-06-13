@@ -242,9 +242,12 @@ ggplot(rejection_rate_data, aes(x = alpha, y = rejection_rate, color = test_type
   geom_line() +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black", size = 0.5) +
-  labs(title = "Type I error plot",
+  labs(title = "Type I Error Plot",
        x = "Level",
        y = "Rejection Rate") +
   theme_minimal() +
   scale_color_manual(values = c("blue", "orange", "darkgreen")) +
-  theme(legend.title = element_blank())
+  theme(
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5)
+  )
